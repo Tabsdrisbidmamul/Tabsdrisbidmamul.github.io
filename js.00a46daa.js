@@ -6761,7 +6761,7 @@ exports.renderCardGrid = renderCardGrid;
 var renderCardNoOptGrid = function renderCardNoOptGrid(parent, cardArray) {
   var cards = '';
   cardArray.forEach(function (card) {
-    var cardMarkup = "\n    <div class=\"card card-".concat(card.id, "\" data-card=").concat(card.id, ">\n      <div class=\"card__details\">\n        <div class=\"name\">").concat(card.question, "</div>\n      </div>\n    </div>\n    ");
+    var cardMarkup = "\n    <div class=\"card card-".concat(card.id, "\" data-card=").concat(card.id, ">\n    <div class=\"card__options card__options--hide\">\n    <a href=\"#\" class=\"options options--edit\">\n      <svg class=\"icon icon--options icon--edit\">\n        <use xlink:href=\"").concat(_edit.default, "\"></use>\n      </svg>\n      <span class=\"show-hide card--edit\">Edit</span>\n    </a>\n\n    <a href=\"#\" class=\"options options--delete\">\n      <svg class=\"icon icon--options icon--delete\">\n        <use xlink:href=\"").concat(_trash.default, "\"></use>\n      </svg>\n      <span class=\"show-hide card--delete\">Delete</span>\n    </a>\n    </div>\n\n      <div class=\"card__details\">\n        <div class=\"name\">").concat(card.question, "</div>\n      </div>\n    </div>\n    ");
     cards += cardMarkup;
   });
   var markup = '';
@@ -6772,7 +6772,7 @@ var renderCardNoOptGrid = function renderCardNoOptGrid(parent, cardArray) {
 exports.renderCardNoOptGrid = renderCardNoOptGrid;
 
 var renderCardAnswer = function renderCardAnswer(HTMLCard, answer) {
-  var markup = "\n  <div class=\"card__options\">\n      <a href=\"#\" class=\"options options--edit\">\n        <svg class=\"icon icon--options icon--edit\">\n          <use class=\"card--edit\" xlink:href=\"".concat(_edit.default, "\"></use>\n        </svg>\n        <span class=\"show-hide card--edit\">Edit</span>\n      </a>\n\n      <a href=\"#\" class=\"options options--delete\">\n        <svg class=\"icon icon--options icon--delete\">\n          <use class=\"card--delete\" xlink:href=\"").concat(_trash.default, "\"></use>\n        </svg>\n        <span class=\"show-hide card--delete\">Delete</span>\n      </a>\n      </div>\n\n  <div class=\"card__details\">\n    <div class=\"card__name\">").concat(answer, "</div>\n  </div>\n\n  <div class=\"answer-form\">\n    <a href=\"#\" class=\"answer-form__link\">\n      <svg class=\"icon icon--card icon--card-right icon--right\">\n        <use xlink:href=\"").concat(_check.default, "\"></use>\n      </svg>\n    </a>\n\n    <a href=\"#\" class=\"answer-form__link\">\n      <svg class=\"icon icon--card icon--card-left icon--wrong\">\n        <use xlink:href=\"").concat(_circleWithCross.default, "\"></use>\n      </svg>\n    </a>\n    </div>\n  ");
+  var markup = "\n  <div class=\"card__options card__options--hide\">\n      <a href=\"#\" class=\"options options--edit\">\n        <svg class=\"icon icon--options icon--edit\">\n          <use class=\"card--edit\" xlink:href=\"".concat(_edit.default, "\"></use>\n        </svg>\n        <span class=\"show-hide card--edit\">Edit</span>\n      </a>\n\n      <a href=\"#\" class=\"options options--delete\">\n        <svg class=\"icon icon--options icon--delete\">\n          <use class=\"card--delete\" xlink:href=\"").concat(_trash.default, "\"></use>\n        </svg>\n        <span class=\"show-hide card--delete\">Delete</span>\n      </a>\n      </div>\n\n  <div class=\"card__details\">\n    <div class=\"card__name\">").concat(answer, "</div>\n  </div>\n\n  <div class=\"answer-form\">\n    <a href=\"#\" class=\"answer-form__link\">\n      <svg class=\"icon icon--card icon--card-right icon--right\">\n        <use xlink:href=\"").concat(_check.default, "\"></use>\n      </svg>\n    </a>\n\n    <a href=\"#\" class=\"answer-form__link\">\n      <svg class=\"icon icon--card icon--card-left icon--wrong\">\n        <use xlink:href=\"").concat(_circleWithCross.default, "\"></use>\n      </svg>\n    </a>\n    </div>\n  ");
   HTMLCard.innerHTML = markup;
 };
 
@@ -7458,7 +7458,7 @@ var renderResults = function renderResults(array) {
 exports.renderResults = renderResults;
 
 var renderMakeCard = function renderMakeCard(HTMLCard, value) {
-  var markup = "\n  <div class=\"card__options\">\n  <a href=\"#\" class=\"options options--add\">\n    <svg class=\"icon icon--options icon--add\">\n      <use xlink:href=\"".concat(_plus.default, "\"></use>\n    </svg>\n    <span class=\"show-hide card--edit\">Add card</span>\n  </a>\n\n</div>\n\n<div class=\"card__details\">\n  <span class=\"name\">").concat(value, "</span>\n</div>");
+  var markup = "\n\n  \n\n</div>\n\n<div class=\"card__details\">\n  <span class=\"name\">".concat(value, "</span>\n</div>");
   HTMLCard.innerHTML = markup;
 };
 
@@ -7638,11 +7638,15 @@ var removeCardFromDeck = function removeCardFromDeck(deckArray) {
       var index;
       deckArray.forEach(function (el, i) {
         if (el.id === cardId) {
+          console.log(el, index);
           index = i;
         }
       }); // 2.3 Remove it from the Deck array
 
-      deckArray.splice(index, 1); // 2.4 Re-render the deck cards back to the screen
+      deckArray.splice(index, 1); // 2.4 Store the deckArray in storage
+
+      _overviewController.state.deck.deckArray = deckArray;
+      storage.storeObj('decks.deckArray', _overviewController.state.deck.deckArray); // 2.5 Re-render the deck cards back to the screen
 
       deckView.renderResultsDeck(deckArray);
     }
@@ -7663,13 +7667,11 @@ var searchButtonUser = function searchButtonUser() {
     if (btn) {
       // 1.1. get the page number from the dataset
       var goToPage = parseInt(btn.dataset.goto, 10);
-
-      var _cards = _overviewController.state.card.cards || storage.getObj('cards'); // 1.2. clear the card results and pagination
-
+      var cards = _overviewController.state.card.cards || storage.getObj('cards'); // 1.2. clear the card results and pagination
 
       deckView.clearUserCardsResults(); // 1.3. Render the new cards and new buttons
 
-      deckView.renderResults(_cards, goToPage);
+      deckView.renderResults(cards, goToPage);
       window.scroll(0, 0);
     }
   });
@@ -7840,7 +7842,7 @@ var updateDeck = function updateDeck(deckId) {
             case 0:
               // 1. Get all the input from user
               name = document.querySelector('.make-deck__input').value;
-              deck = _overviewController.state.deck.deckArray;
+              deck = _overviewController.state.deck.deckArray || storage.getObj('decks.deckArray');
               token = storage.getObj('token');
               _context5.prev = 3;
 
@@ -7850,7 +7852,7 @@ var updateDeck = function updateDeck(deckId) {
               }
 
               // 2.1 Create a card array with only distinct values
-              distinctCards = _toConsumableArray(new Set(cards.map(function (card) {
+              distinctCards = _toConsumableArray(new Set(deck.map(function (card) {
                 return card.id;
               }))); // 2.2 Create the Deck and reload a new deckMaker Session
 
@@ -8019,7 +8021,7 @@ var deckMakerLoader = function deckMakerLoader() {
     deckView.removePaginationDeck();
   } else {
     deckView.removePaginationUser();
-    deckView.removePaginationUser();
+    deckView.removePaginationDeck();
   } // 4. Create the DeckArray reference
 
 
@@ -8041,16 +8043,20 @@ var deckUpdateMaker = function deckUpdateMaker(deckId) {
   var cards = _overviewController.state.card.cards || storage.getObj('cards'); // 2. Create the Deck array
 
   var deckArray = deckData.cards;
+  storage.storeObj('decks.deckArray', deckArray);
   (0, _base.clearOverview)();
   deckView.renderUpdateDeckGrid(_base.elements.overview, deckData);
 
-  if (deckArray.length < 3) {
+  if (deckArray.length < 5) {
+    deckView.renderResultsDeck(cards);
     deckView.removePaginationDeck();
+  } else {
+    deckView.renderResultsDeck(cards);
+    searchButtonHandler();
   } // 4. Render the update deck and handlers
 
 
   deckView.renderResults(cards);
-  deckView.renderResultsDeck(deckArray);
   searchButtonHandler();
   swapCardFacing();
   getCardItem();
@@ -8856,9 +8862,8 @@ var classroomUpdateMaker = /*#__PURE__*/function () {
 
             if (deck.length !== 0) {
               classroomDeck = deck;
-            }
+            } // 1.3 add the students and decks to the local storage
 
-            console.log(classroomDeck); // 1.3 add the students and decks to the local storage
 
             _overviewController.state.classroom.studentArray = students;
             storage.storeObj('studentArray', students);
@@ -8903,7 +8908,7 @@ var classroomUpdateMaker = /*#__PURE__*/function () {
 
             updateClassroom(classroomId);
 
-          case 28:
+          case 27:
           case "end":
             return _context5.stop();
         }
@@ -8991,17 +8996,21 @@ var updateClassroom = function updateClassroom(classroomId) {
   // User clicks to update the deck
   document.querySelector('.icon--make-classroom-right').addEventListener('click', /*#__PURE__*/function () {
     var _ref8 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee9(e) {
-      var name, user, deckId, students, token, distinctStudents;
+      var name, deck, students, token, deckId, distinctStudents;
       return regeneratorRuntime.wrap(function _callee9$(_context9) {
         while (1) {
           switch (_context9.prev = _context9.next) {
             case 0:
               // 1. Get all the input from user
               name = document.querySelector('.make-classroom__input').value;
-              user = storage.getObj('user').id || _overviewController.state.user.userData.id;
-              deckId = storage.getObj('classroomDeck')[0].id;
+              deck = storage.getObj('classroomDeck');
               students = storage.getObj('classroomStudentArray');
               token = storage.getObj('token');
+
+              if (deck.length !== 0) {
+                deckId = deck[0].id;
+              }
+
               _context9.prev = 5;
 
               if (!(name && deckId && students)) {
@@ -13100,7 +13109,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53177" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "63004" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
