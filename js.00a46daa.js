@@ -8311,7 +8311,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var renderClassroomGrid = function renderClassroomGrid(parent, classroomArray) {
   var classrooms = '';
   classroomArray.forEach(function (classroom) {
-    var classroomMarkup = "\n      <div class=\"classroom classroom-".concat(classroom.id, "\" data-classroom=").concat(classroom.id, ">\n      <div class=\"classroom__options\">\n            <a href=\"#\" class=\"options options--edit\">\n              <svg class=\"icon icon--options icon--edit\">\n                <use xlink:href=\"").concat(_edit.default, "\"></use>\n              </svg>\n              <span class=\"show-hide card--edit\">Edit</span>\n            </a>\n\n            <a href=\"#\" class=\"options options--delete\">\n              <svg class=\"icon icon--options icon--delete\">\n                <use xlink:href=\"").concat(_trash.default, "\"></use>\n              </svg>\n              <span class=\"show-hide card--delete\">Delete</span>\n            </a>\n          </div>\n\n        <div class=\"classroom__details\">\n          <div class=\"name\">").concat(classroom.name, "</div>\n        </div>\n      </div> \n    ");
+    var classroomMarkup = isStudent(classroom);
     classrooms += classroomMarkup;
   }); // checks if the user is a teacher and then allows them to create a new classroom if they are.
 
@@ -8338,6 +8338,18 @@ var isTeacher = function isTeacher() {
     markup += "\n    <div class=\"make-classroom\">\n        <a href=\"#\" class=\"btn btn--ghost make-classroom\">Make A New Classroom</a>\n    </div>";
   } else {
     markup += "<div class=\"make-classroom\">\n    &nbsp; \n      </div>";
+  }
+
+  return markup;
+};
+
+var isStudent = function isStudent(classroom) {
+  var markup = '';
+
+  if (storage.getObj('user').role === 'student') {
+    markup = "<div class=\"classroom classroom-".concat(classroom.id, "\" data-classroom=").concat(classroom.id, ">\n    \n\n      <div class=\"classroom__details\">\n        <div class=\"name\">").concat(classroom.name, "</div>\n      </div>\n    </div> ");
+  } else {
+    markup = "<div class=\"classroom classroom-".concat(classroom.id, "\" data-classroom=").concat(classroom.id, ">\n    <div class=\"classroom__options\">\n          <a href=\"#\" class=\"options options--edit\">\n            <svg class=\"icon icon--options icon--edit\">\n              <use xlink:href=\"").concat(_edit.default, "\"></use>\n            </svg>\n            <span class=\"show-hide card--edit\">Edit</span>\n          </a>\n\n          <a href=\"#\" class=\"options options--delete\">\n            <svg class=\"icon icon--options icon--delete\">\n              <use xlink:href=\"").concat(_trash.default, "\"></use>\n            </svg>\n            <span class=\"show-hide card--delete\">Delete</span>\n          </a>\n        </div>\n\n      <div class=\"classroom__details\">\n        <div class=\"name\">").concat(classroom.name, "</div>\n      </div>\n    </div> ");
   }
 
   return markup;
@@ -13110,7 +13122,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "64914" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "56213" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
