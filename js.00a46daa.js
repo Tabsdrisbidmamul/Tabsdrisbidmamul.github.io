@@ -6772,7 +6772,7 @@ var renderCardNoOptGrid = function renderCardNoOptGrid(parent, cardArray) {
 exports.renderCardNoOptGrid = renderCardNoOptGrid;
 
 var renderCardAnswer = function renderCardAnswer(HTMLCard, answer) {
-  var markup = "\n  <div class=\"card__options card__options--hide\">\n      <a href=\"#\" class=\"options options--edit\">\n        <svg class=\"icon icon--options icon--edit\">\n          <use class=\"card--edit\" xlink:href=\"".concat(_edit.default, "\"></use>\n        </svg>\n        <span class=\"show-hide card--edit\">Edit</span>\n      </a>\n\n      <a href=\"#\" class=\"options options--delete\">\n        <svg class=\"icon icon--options icon--delete\">\n          <use class=\"card--delete\" xlink:href=\"").concat(_trash.default, "\"></use>\n        </svg>\n        <span class=\"show-hide card--delete\">Delete</span>\n      </a>\n      </div>\n\n  <div class=\"card__details\">\n    <div class=\"card__name\">").concat(answer, "</div>\n  </div>\n\n  <div class=\"answer-form\">\n    <a href=\"#\" class=\"answer-form__link\">\n      <svg class=\"icon icon--card icon--card-right icon--right\">\n        <use xlink:href=\"").concat(_check.default, "\"></use>\n      </svg>\n    </a>\n\n    <a href=\"#\" class=\"answer-form__link\">\n      <svg class=\"icon icon--card icon--card-left icon--wrong\">\n        <use xlink:href=\"").concat(_circleWithCross.default, "\"></use>\n      </svg>\n    </a>\n    </div>\n  ");
+  var markup = "\n  <div class=\"card__options \">\n      <a href=\"#\" class=\"options options--edit\">\n        <svg class=\"icon icon--options icon--edit\">\n          <use class=\"card--edit\" xlink:href=\"".concat(_edit.default, "\"></use>\n        </svg>\n        <span class=\"show-hide card--edit\">Edit</span>\n      </a>\n\n      <a href=\"#\" class=\"options options--delete\">\n        <svg class=\"icon icon--options icon--delete\">\n          <use class=\"card--delete\" xlink:href=\"").concat(_trash.default, "\"></use>\n        </svg>\n        <span class=\"show-hide card--delete\">Delete</span>\n      </a>\n      </div>\n\n  <div class=\"card__details\">\n    <div class=\"card__name\">").concat(answer, "</div>\n  </div>\n\n  <div class=\"answer-form\">\n    <a href=\"#\" class=\"answer-form__link\">\n      <svg class=\"icon icon--card icon--card-right icon--right\">\n        <use xlink:href=\"").concat(_check.default, "\"></use>\n      </svg>\n    </a>\n\n    <a href=\"#\" class=\"answer-form__link\">\n      <svg class=\"icon icon--card icon--card-left icon--wrong\">\n        <use xlink:href=\"").concat(_circleWithCross.default, "\"></use>\n      </svg>\n    </a>\n    </div>\n  ");
   HTMLCard.innerHTML = markup;
 };
 
@@ -6962,7 +6962,8 @@ exports.getCardsFromAPI = getCardsFromAPI;
 
 var cardRender = function cardRender() {
   // 1. Get the cards
-  var cards = _overviewController.state.card.cards || storage.getObj('cards'); // 2. Check if they are empty, if so render and exit function
+  var cards = storage.getObj('cards') || _overviewController.state.card.cards; // 2. Check if they are empty, if so render and exit function
+
 
   if (cards.length === 0) {
     return cardView.renderEmptyCardGrid(_base.elements.overview);
@@ -9276,7 +9277,7 @@ var getArrayType = function getArrayType(arrayType) {
 var viewDeckFromClassroom = function viewDeckFromClassroom(deck) {
   document.querySelector('.view-classroom__item--deck').addEventListener('click', function (e) {
     (0, _base.clearOverview)();
-    console.log(deck);
+    storage.storeObj('cards', deck.cards);
 
     if (storage.getObj('user').role === 'teacher') {
       (0, _cardView.renderCardGrid)(_base.elements.overview, deck.cards);
@@ -13109,7 +13110,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "63004" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "64914" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
